@@ -1,0 +1,9 @@
+{
+    "name"             : "sm64eep",
+    "version"          : "0",
+    "manifest_version" : 2,
+    "permissions"      : [ { "fileSystem" : ["write"] }, "storage" ],
+    "app"              : {
+        "background" : { "scripts" : ["background.js"] }
+    }
+}
