@@ -78,16 +78,21 @@ window.addEventListener("load", function()
         
         function doUpdate()
         {
+            var md = this.metadata;
+            var size = (md.glob === true) ? 32 : 56;
             var addr = Editor.addr;
-
-            _ref.data[     addr + this.metadata.offset] = parseInt(this.value & 0xFF, 10);
-            _ref.data[56 + addr + this.metadata.offset] = parseInt(this.value & 0xFF, 10);
+            if(md.type === "num")
+            {
+                _ref.data[       addr + md.offset] = parseInt(this.value & 0xFF, 10);
+                _ref.data[size + addr + md.offset] = parseInt(this.value & 0xFF, 10);
+            }
             
-            var sum = sumCheck(addr, 54, _ref.data);
-            _ref.data[addr + 54]      = sum >> 8;
-            _ref.data[addr + 55]      = sum & 0xFF;
-            _ref.data[addr + 56 + 54] = sum >> 8;
-            _ref.data[addr + 56 + 55] = sum & 0xFF;
+            var sum = sumCheck(addr, size-2, _ref.data);
+            var sum2 = [sum >> 8, sum & 0xFF];
+            _ref.data[addr + size   - 2] = sum2[0];
+            _ref.data[addr + size   - 1] = sum2[1];
+            _ref.data[addr + size*2 - 2] = sum2[0];
+            _ref.data[addr + size*2 - 1] = sum2[1];
             
             _ref.updateHex();
         }
@@ -165,7 +170,7 @@ window.addEventListener("load", function()
             for(var i = 0; i < 15; i++)
             {
                 var txtBox      = document.createElement("input");
-                txtBox.metadata = {slot: _ref.addr, offset: 0x25 + i};
+                txtBox.metadata = {type: "num", slot: _ref.addr, offset: 0x25 + i};
                 txtBox.oninput  = Eeprom.update;
                 controls.push(txtBox);
                 grab("#out").appendChild(txtBox);
