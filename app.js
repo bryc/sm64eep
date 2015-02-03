@@ -113,6 +113,29 @@ window.addEventListener("load", function()
             return (select.length === 1 ? select[0] : select);
         }
         
+        function temply(html, options)
+        {
+            var re = /<%(.+?)%>/g, 
+                reExp = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g, 
+                code = 'with(obj) { var r=[];\n', 
+                cursor = 0, 
+                result;
+            var add = function(line, js) {
+                js? (code += line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
+                    (code += line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
+                return add;
+            }
+            while(match = re.exec(html)) {
+                add(html.slice(cursor, match.index))(match[1], true);
+                cursor = match.index + match[0].length;
+            }
+            add(html.substr(cursor, html.length - cursor));
+            code = (code + 'return r.join(""); }').replace(/[\r\t\n]/g, '');
+            try { result = new Function('obj', code).apply(options, [options]); }
+            catch(err) { console.error("'" + err.message + "'", " in \n\nCode:\n", code, "\n"); }
+            return result;
+        }
+        
         function initDrag()
         {
             var dragIsFile = false;
@@ -170,21 +193,17 @@ window.addEventListener("load", function()
             for(var i = 0; i < 15; i++)
             {
                 var txtBox      = document.createElement("input");
-                txtBox.metadata = {type: "num", slot: _ref.addr, offset: 0x25 + i};
+                txtBox.metadata = {type: "num", offset: 0x25 + i};
                 txtBox.oninput  = Eeprom.update;
                 controls.push(txtBox);
                 grab("#out").appendChild(txtBox);
-            }
+            } this.controls = controls;
             updateValues();
         }
 
         function select()
         {
             _ref.addr = this.selectedIndex * 112;
-            for(var i = 0; i < controls.length; i++)
-            {
-                controls[i].metadata.slot = _ref.addr;
-            }
             chrome.storage.local.set({"dataIndex" : _ref.addr});
             updateValues();
         }
@@ -292,5 +311,5 @@ window.addEventListener("load", function()
     Editor.init();
     
     //window.EEPROM = function(){console.log(Eeprom.data);return Eeprom.data;};
-    //window.ex = function(){ return [Eeprom, Editor, File]; };
+    window.ex = function(){ return [Eeprom, Editor, File]; };
 });
