@@ -23,7 +23,7 @@ window.addEventListener("load", function()
                 dat = dat.concat(slot);
             }
             _ref.data = dat;
-        };
+        }
 
         function updateHex()
         {
@@ -34,7 +34,7 @@ window.addEventListener("load", function()
                 else { t += digit + " "; }
                 Editor.grab("#out2").innerHTML = t;
             }
-        };
+        }
         
         function dupeCheck(offset, size, data)
         {
@@ -74,7 +74,7 @@ window.addEventListener("load", function()
                 checkValue |= (c1 << 0 + b) + (c2 << 1 + b) + (c3 << 2 + b);
             }
             return checkValue;
-        };
+        }
         
         function doUpdate()
         {
@@ -141,7 +141,7 @@ window.addEventListener("load", function()
                     File.doLoad(fl, evt.dataTransfer.items[0].webkitGetAsEntry());
                 }
             });
-        };
+        }
         
         function updateValues()
         {
@@ -173,7 +173,7 @@ window.addEventListener("load", function()
             updateValues();
         }
 
-        function select(e)
+        function select()
         {
             _ref.addr = this.selectedIndex * 112;
             for(var i = 0; i < controls.length; i++)
@@ -211,7 +211,7 @@ window.addEventListener("load", function()
                     Editor.save.disabled = false;
                 };
             });});
-        };
+        }
         
         function doLoad(fl, Entry)
         {
@@ -234,7 +234,7 @@ window.addEventListener("load", function()
                     console.log("File loaded: " + f.file.name);
                 }
             };
-        };
+        }
         
         function openFile()
         {
@@ -248,7 +248,7 @@ window.addEventListener("load", function()
                     }
                 });
             });
-        };
+        }
         
         function saveAsFile()
         {
@@ -257,7 +257,7 @@ window.addEventListener("load", function()
             suggestedName: Editor.save.disabled ? "SUPER MARIO 64.eep" : Editor.filename.innerText,
             accepts: [ {extensions : ["eep"]} ]
             }, doSave);
-        };
+        }
         
         function saveFile()
         {
