@@ -30,7 +30,7 @@ window.addEventListener("load", function()
             for(var i = 0, t = ""; i < _ref.data.length; i++)
             {
                 var digit = ("00" + _ref.data[i].toString(16)).slice(-2).toUpperCase();
-                if(i!==0 && i%16==15) { t += digit + "<br>"; }
+                if(i!==0 && i%32==31) { t += digit + "<br>"; }
                 else { t += digit + " "; }
                 Editor.grab("#out2").innerHTML = t;
             }
@@ -86,6 +86,11 @@ window.addEventListener("load", function()
                 _ref.data[       addr + md.offset] = parseInt(this.value & 0xFF, 10);
                 _ref.data[size + addr + md.offset] = parseInt(this.value & 0xFF, 10);
             }
+            else if(md.type === "flag")
+            {
+                _ref.data[       addr + md.offset] ^= md.bit;
+                _ref.data[size + addr + md.offset] ^= md.bit;
+            }
             
             var sum = sumCheck(addr, size-2, _ref.data);
             var sum2 = [sum >> 8, sum & 0xFF];
@@ -106,6 +111,68 @@ window.addEventListener("load", function()
     {
         var _ref = this, controls = [];
         this.addr = 0;
+        
+        var levelNames = {
+            0x08 : "Castle Interior",
+            0x0C : "Bob-omb Battlefield",
+            0x0D : "Whomp's Fortress",
+            0x0E : "Jolly Roger Bay",
+            0x0F : "Cool, Cool Mountain",
+            0x10 : "Big Boo's Haunt",
+            0x11 : "Hazy Maze Cave",
+            0x12 : "Lethal Lava Land",
+            0x13 : "Shifting Sand Land",
+            0x14 : "Dire, Dire Docks",
+            0x15 : "Snowman's Land",
+            0x16 : "Wet-Dry World",
+            0x17 : "Tall, Tall Mountain",
+            0x18 : "Tiny-Huge Island",
+            0x19 : "Tick Tock Clock",
+            0x1A : "Rainbow Ride",
+            0x1B : "Bowser in the Dark World",
+            0x1C : "Bowser in the Fire Sea",
+            0x1D : "Bowser in the Sky",
+            0x1E : "The Princess's Secret Slide",
+            0x1F : "Cavern of the Metal Cap",
+            0x20 : "Tower of the Wing Cap",
+            0x21 : "Vanish Cap Under the Moat",
+            0x22 : "Wing Mario Over the Rainbow",
+            0x23 : "The Secret Aquarium",
+            0x24 : "unused (0x24)"
+        };
+        
+        var miscFlags = {
+            0x0B : {
+                0 : "Save file occupied",
+                1 : "Wing cap activated",
+                2 : "Metal cap activated",
+                3 : "Vanish cap activated",
+                4 : "Have key (basement)",
+                5 : "Have key (2nd floor)",
+                6 : "Key door unlocked (basement)",
+                7 : "Key door unlocked (2nd floor)"
+            },
+            0x0A : {
+                0 : "Portal moved back (Dire Dire Docks)",
+                1 : "Castle moat drained",
+                2 : "Star door animation seen (Secret Slide)",
+                3 : "Star door animation seen (Whomp)",
+                4 : "Star door animation seen (Cool)",
+                5 : "Star door animation seen (Jolly)",
+                6 : "Star door animation seen (Bowser)",
+                7 : "Star door animation seen (Bowser 2)"
+            },
+            0x09 : {
+                0 : "Lost cap - Level ID (Coordinates)",
+                1 : "Lost cap - Shifting Sand Land",
+                2 : "Lost cap - Tall, Tall Mountain",
+                3 : "Lost cap - Snowman's Land",
+                4 : "Star door animation seen (Third floor/Clock)",
+                5 : "unknown or unused",
+                6 : "unknown or unused",
+                7 : "unknown or unused"
+            }
+        };
         
         function grab(a)
         {
@@ -152,7 +219,14 @@ window.addEventListener("load", function()
         {
             for(var i = 0; i < controls.length; i++)
             {
-                controls[i].value = parseInt(Eeprom.data[_ref.addr + controls[i].metadata.offset], 10);
+                if(controls[i].metadata.type === "num")
+                {
+                    controls[i].value = parseInt(Eeprom.data[_ref.addr + controls[i].metadata.offset], 10);
+                }
+                else if(controls[i].metadata.type === "flag")
+                {
+                    controls[i].checked = Eeprom.data[_ref.addr + controls[i].metadata.offset] & controls[i].metadata.bit;
+                }
             }
         }
         
@@ -167,13 +241,67 @@ window.addEventListener("load", function()
                 }
             });
             
-            for(var i = 0; i < 15; i++)
+            var t       = document.createElement("table");
+            t.innerHTML = "<tbody><tr><th>Level</th><th>Level flags</th><th>Coins</th></tr></tbody>";
+            
+            for(var i = 0x08; i <= 0x24; i++)
             {
-                var txtBox      = document.createElement("input");
-                txtBox.metadata = {type: "num", offset: 0x25 + i};
-                txtBox.oninput  = Eeprom.update;
-                controls.push(txtBox);
-                grab("#out").appendChild(txtBox);
+                if(i !== 0x09 && i !== 0x0A && i !== 0x0B)
+                {
+                    var fuck = document.createElement('tr');
+                    fuck.innerHTML = "<td>" + levelNames[i] + "</td><td></td><td></td>";
+                    t.childNodes[0].appendChild(fuck); // Append new <tr> to the <tbody>
+                
+                    var y = t.childNodes[0].lastChild; // Get the last added <tr>
+                    
+                    for(var j = 0; j < 8; j++)
+                    {
+                        var o = document.createElement("input");
+                        o.type = "checkbox";
+                        o.metadata = {
+                            type : "flag",
+                            bit : (1 << j),
+                            offset : i
+                        }
+                        o.onchange = Eeprom.update;
+                        y.childNodes[1].appendChild(o);
+                        controls.push(o);
+                    }
+                    
+                    if(i >= 0xC && i <= 0x1A)
+                    {
+                        var o = document.createElement("input");
+                        o.oninput = Eeprom.update;
+                        o.metadata = {
+                            type : "num",
+                            offset : i + 25
+                        }
+                        o.value = (i+25).toString(16);
+                        y.childNodes[2].appendChild(o);
+                        controls.push(o);
+                    }
+                }
+            }
+            grab("#left").appendChild(t);
+            
+            for(var i = 0x0B; i >= 0x09; i--)
+            {
+                for(var j = 0; j < 8; j++)
+                {
+                    var p = document.createElement("label");
+                    p.innerHTML = miscFlags[i][j];
+                    var o = document.createElement("input");
+                    o.type = "checkbox";
+                    o.metadata = {
+                        type : "flag",
+                        bit : (1 << j),
+                        offset : i
+                    }
+                    o.onchange = Eeprom.update;
+                    p.insertBefore(o,p.firstChild);
+                    grab("#right").appendChild(p);
+                    controls.push(o);
+                }
             }
             updateValues();
         }
@@ -287,6 +415,5 @@ window.addEventListener("load", function()
     Editor.grab("select").onchange = Editor.select;
     Editor.init();
     
-    //window.EEPROM = function(){console.log(Eeprom.data);return Eeprom.data;};
-    window.ex = function(){ return [Eeprom, Editor, File]; };
+    //window.ex = function(){ return [Eeprom, Editor, File]; };
 });
