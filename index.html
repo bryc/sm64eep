@@ -1,23 +1,18 @@
 <style>
-body,table
-{
+body,table {
     font-size: 12px;
     border-collapse: collapse;
 }
-table
+div#titl,th
 {
-    width: 100%;
+    font-size: 14px;
+    text-align: left;
+    font-weight: bold;
+    padding: 4px;
+    border-bottom: 1px solid #DDD;
 }
-#out2
-{
-    display: none;
-    font: 12px monospace;
-}
-label
-{
-    display: block;
-}
-
+table{width: 100%;}
+label{display: block;}
 td:last-child>input{width:35px;font-size:12px;height:14px}
 div#left{float:left;width:49.9%}
 div#right{float:right;width:49.9%}
@@ -25,14 +20,6 @@ div#clear{clear:both;visibility:hidden}
 td>input[type=checkbox]{margin:0}
 label:hover{background:#EEE}
 td{height:13px}
-
-div#titl,th
-{
-    font-size: 14px;
-    text-align: left;
-    font-weight: bold;
-    padding: 4px;
-    border-bottom: 1px solid #DDD;}
 </style>
 
 <div id=bar>
@@ -48,10 +35,8 @@ div#titl,th
     &nbsp;<span id=nam></span>
 </div>
 
-<div id=out2 class=box></div>
 <div id=out class=box>
-<div id=left></div><div id=right><div id=titl>Misc flags</div>
-<div id=clear></div>
+    <div id=left></div><div id=right><div id=clear></div>
 </div>
 
 <script src=app.js></script>
