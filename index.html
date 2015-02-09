@@ -1,42 +1,51 @@
-<style>
-body,table {
-    font-size: 12px;
-    border-collapse: collapse;
-}
-div#titl,th
-{
-    font-size: 14px;
-    text-align: left;
-    font-weight: bold;
-    padding: 4px;
-    border-bottom: 1px solid #DDD;
-}
-table{width: 100%;}
-label{display: block;}
-td:last-child>input{width:35px;font-size:12px;height:14px}
-div#left{float:left;width:49.9%}
-div#right{float:right;width:49.9%}
-div#clear{clear:both;visibility:hidden}
-td>input[type=checkbox]{margin:0}
-label:hover{background:#EEE}
-td{height:13px}
-</style>
-
-<div id=bar>
-    <input id=sv1 value=Save type=button>
-    <input id=sv2 value="Save As" type=button>
-    <input id=lod value=Load type=button>
-    <select>
-        <option>Game A</option>
-        <option>Game B</option>
-        <option>Game C</option>
-        <option>Game D</option>
-    </select>
-    &nbsp;<span id=nam></span>
-</div>
-
-<div id=out class=box>
-    <div id=left></div><div id=right><div id=clear></div>
-</div>
-
-<script src=app.js></script>
+<!doctype html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <title>sm64eep</title>
+    <style>
+    label{display: block;}
+    label:hover{background:#EEE}
+    div#left{float:left;width:49.9%}
+    div#right{float:right;width:49.9%}
+    td:last-child>input{padding:0;width:35px;font-size:12px;height:10px}
+    td>input[type=checkbox]{margin:0}
+    td{height:14px}
+    body,table {
+        margin-bottom:0;
+        font-size: 12px;
+        border-collapse: collapse;
+    }
+    div#titl,th
+    {
+        padding: 4px; padding-bottom:1px;
+        font-size: 14px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 1px solid #DDD;
+    }
+    table{width: 100%;}
+    
+    div#clear{clear:both;visibility:hidden}
+    </style>
+    <script src=app.js></script>
+</head>
+<body>
+    <div id=bar>
+        <input id=sv1 value=Save type=button>
+        <input id=sv2 value="Save As" type=button>
+        <input id=lod value=Load type=button>
+        <select>
+            <option>Game A</option>
+            <option>Game B</option>
+            <option>Game C</option>
+            <option>Game D</option>
+        </select>
+        &nbsp;<span id=nam></span>
+    </div>
+    
+    <div id=out class=box>
+        <div id=left></div><div id=right></div><div id=clear></div>
+    </div>
+    </body>
+</html>
