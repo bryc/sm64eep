@@ -1,7 +1,6 @@
-window.addEventListener("load", function()
+(function()
 {
     "use strict";
-    var Eeprom, Editor, File;
     
     function EepromHandler()
     {
@@ -132,7 +131,6 @@ window.addEventListener("load", function()
                 }
             }
         }
-        
         
         function initDrag()
         {
@@ -303,6 +301,8 @@ window.addEventListener("load", function()
             }
             
             Eeprom.init();
+            _ref.save = grab("#sv1");
+            _ref.filename = grab("#nam");
             _ref.save.disabled = true;
             _ref.filename.innerText = "Unsaved file";
             _ref.initDrag(true); 
@@ -329,8 +329,6 @@ window.addEventListener("load", function()
         
         this.grab = grab;
         this.addr = 0;
-        this.save = grab("#sv1");
-        this.filename = grab("#nam");
         this.updateControls = updateControls;
         this.changeSlot = changeSlot;
         this.initDrag = initDrag;
@@ -369,7 +367,7 @@ window.addEventListener("load", function()
                 var dat = new Uint8Array(f.result);
                 if(Eeprom.check(dat) === 0x7FFF)
                 {
-                    _ref.entry = f.entry;
+                    _ref.entry = f.entry; // TODO: Should we use event variable or just f?
                     Eeprom.data = dat;
                     Editor.updateControls();
                     Editor.save.disabled = false;
@@ -413,9 +411,18 @@ window.addEventListener("load", function()
         this.doLoad     = doLoad;
     }
     
-    Eeprom = new EepromHandler();
-    Editor = new UIHandler();
-    File   = new FileHandler();
+    var Eeprom = new EepromHandler(),
+        Editor = new UIHandler(),
+        File   = new FileHandler();
     
-    Editor.init();
+    window.SM64App = {
+        Editor: Editor,
+        Eeprom: Eeprom,
+        File: File
+    };
+})();
+
+window.addEventListener("load", function()
+{
+    SM64App.Editor.init();
 });
