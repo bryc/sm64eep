@@ -216,46 +216,53 @@ code{color:#777;}
     </thead>
     <tbody>
         <tr>
-            <td title="0">0x0000</td>
-            <td title="15">0x000F</td>
-            <td title="16 bytes">16</td>
-            <td>Unknown XOR bit data</td>
+            <td class="m">0x0000</td>
+            <td class="m">0x000F</td>
+            <td>16</td>
+            <td>Uknown XOR bit data</td>
         </tr>
         <tr>
-            <td title="16">0x0010</td>
-            <td title="17">0x0011</td>
-            <td title="2 bytes">2</td>
-            <td>Sound setting
-            <br>
-            0x00 = Stereo<br>
-            0x01 = Mono<br>
-            0x02 = Headset</td>
+            <td>0x0010</td>
+            <td>0x0011</td>
+            <td>2</td>
+            <td>
+              Sound setting<br>
+              <code>
+                0x00: Stereo<br>
+                0x01: Mono<br>
+                0x02: Headset
+              </code>
+            </td>
         </tr>
         <tr>
-            <td title="18">0x0012</td>
-            <td title="19">0x0013</td>
-            <td title="2 bytes">2</td>
-            <td>Language setting (EU version only)<br>
-            0x00 = English<br>
-            0x01 = French<br>
-            0x02 = German</td>
+            <td class="m">0x0012</td>
+            <td class="m">0x0013</td>
+            <td>2</td>
+            <td>
+              Language setting (EU version only)<br>
+              <code>
+              0x00: English<br>
+              0x01: French<br>
+              0x02: German
+              </code>
+              </td>
         </tr>
         <tr>
-            <td title="20">0x0014</td>
-            <td title="27">0x001B</td>
-            <td title="8 bytes">8</td>
+            <td class="m">0x0014</td>
+            <td class="m">0x001B</td>
+            <td>8</td>
             <td>Reserved or unused</td>
         </tr>
         <tr>
-            <td title="28">0x001C</td>
-            <td title="29">0x001D</td>
-            <td title="2 bytes">2</td>
-            <td>Magic number (0x4849 – "HI")</td>
+            <td class="m">0x001C</td>
+            <td class="m">0x001D</td>
+            <td>2</td>
+          <td>Magic number ( <code>0x4849, 'HI'</code> )</td>
         </tr>
         <tr>
-            <td title="30">0x001E</td>
-            <td title="31">0x001F</td>
-            <td title="2 bytes">2</td>
+            <td class="m">0x001E</td>
+            <td class="m">0x001F</td>
+            <td>2</td>
             <td>16-bit checksum</td>
         </tr>
     </tbody>
