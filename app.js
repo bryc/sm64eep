@@ -1,3 +1,4 @@
+ /*jslint bitwise: true*/ 
 (function()
 {
     "use strict";
@@ -111,7 +112,7 @@
     {
         var _ref = this, controls = [];
         
-        var grab = function grab(a)
+        function grab(a)
         {
             var select = document.querySelectorAll(a);
             return (select.length === 1 ? select[0] : select);
@@ -240,8 +241,8 @@
             
             var levelTable       = document.createElement("table");
             levelTable.innerHTML = "<tbody><tr><th>Level</th><th>Level flags</th><th>Coins</th></tr></tbody>";
-            
-            for(var i = 0x08; i <= 0x24; i++)
+            var i, j, o;
+            for(i = 0x08; i <= 0x24; i++)
             {
                 if(i !== 0x09 && i !== 0x0A && i !== 0x0B)
                 {
@@ -250,15 +251,15 @@
                     levelTable.childNodes[0].appendChild(row); // Append new <tr> to the <tbody>
                     var currentRow = levelTable.childNodes[0].lastChild; // Get the last added <tr>
                     
-                    for(var j = 0; j < 8; j++)
+                    for(j = 0; j < 8; j++)
                     {
-                        var o = document.createElement("input");
+                        o = document.createElement("input");
                         o.type = "checkbox";
                         o.metadata = {
                             type : "flag",
                             bit : (1 << j),
                             offset : i
-                        }
+                        };
                         o.onchange = Eeprom.update;
                         currentRow.childNodes[1].appendChild(o);
                         controls.push(o);
@@ -266,12 +267,12 @@
                     
                     if(i >= 0xC && i <= 0x1A)
                     {
-                        var o = document.createElement("input");
+                        o = document.createElement("input");
                         o.oninput = Eeprom.update;
                         o.metadata = {
                             type : "num",
                             offset : i + 25
-                        }
+                        };
                         o.value = (i+25).toString(16);
                         currentRow.childNodes[2].appendChild(o);
                         controls.push(o);
@@ -280,19 +281,19 @@
             }
             
             var _miscFlags = document.createElement("div");
-            for(var i = 0x0B; i >= 0x09; i--)
+            for(i = 0x0B; i >= 0x09; i--)
             {
-                for(var j = 0; j < 8; j++)
+                for(j = 0; j < 8; j++)
                 {
                     var p = document.createElement("label");
                     p.innerHTML = miscFlags[i][j];
-                    var o = document.createElement("input");
+                    o = document.createElement("input");
                     o.type = "checkbox";
                     o.metadata = {
                         type : "flag",
                         bit : (1 << j),
                         offset : i
-                    }
+                    };
                     o.onchange = Eeprom.update;
                     p.insertBefore(o, p.firstChild);
                     _miscFlags.appendChild(p);
@@ -335,7 +336,7 @@
         this.init = init;
     }
     
-    var FileHandler = function FileHandler()
+    function FileHandler()
     {
         var _ref = this;
         
