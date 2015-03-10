@@ -1,11 +1,19 @@
 (function()
 {
     "use strict";
-    
+
+    function grab(a)
+    {
+        var select = document.querySelectorAll(a);
+        return (select.length === 1 ? select[0] : select);
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+
     function EepromHandler()
     {
         var _ref = this;
-        
+
         function init()
         {
             for(var i = 0, dat = []; i < 10; i++)
@@ -17,24 +25,33 @@
                     t    = len-2,
                     sum = 0;
                 slot[len-4] = m   >> 8; slot[len-3] = m   & 0xFF;
-                while(t--){sum+=slot[t];}
+                while(t--) {sum+=slot[t];}
                 slot[len-2] = sum >> 8; slot[len-1] = sum & 0xFF;
                 dat = dat.concat(slot);
             }
             _ref.data = dat;
         }
-        
-        function updateHex()
+
+        function check(data)
         {
-            for(var i = 0, t = ""; i < _ref.data.length; i++)
+            var i, b, checkValue = 0;
+            for(i = 0, b = 0; i < 512; i+= 112, b += 3)
             {
-                var digit = ("00" + _ref.data[i].toString(16)).slice(-2).toUpperCase();
-                if(i!==0 && i%32==31) { t += digit + "<br>"; }
-                else { t += digit + " "; }
-                Editor.grab("#out2").innerHTML = t;
+                var size      = (i >= 448) ? 32 : 56;
+                var magic0    = (i >= 448) ? 0x4849 : 0x4441;
+                var magic1    = (data[i + size - 4] << 8) + data[i + size - 3];
+                var checksum1 = (data[i + size - 2] << 8) + data[i + size - 1];
+                var checksum0 = sumCheck(i, size - 2, data);
+                var dupeChck = dupeCheck(i, size, data);
+                var dsm = (magic0 >> 8) + magic0 & 0xFF;
+                var c1 = (magic1 === magic0);
+                var c2 = (checksum1 === checksum0) && (checksum0 >= dsm);
+                var c3 = (dupeChck === size);
+                checkValue |= (c1 << 0 + b) + (c2 << 1 + b) + (c3 << 2 + b);
             }
+            return checkValue;
         }
-        
+
         function doUpdate()
         {
             var md = this.metadata;
@@ -81,42 +98,40 @@
             return checksum;
         }
         
-        function check(data)
-        {
-            var i, b, checkValue = 0;
-            for(i = 0, b = 0; i < 512; i+= 112, b += 3)
-            {
-                var size      = (i >= 448) ? 32 : 56; // todo
-                var magic0    = (i >= 448) ? 0x4849 : 0x4441;
-                var magic1    = (data[i + size - 4] << 8) + data[i + size - 3];
-                var checksum1 = (data[i + size - 2] << 8) + data[i + size - 1];
-                var checksum0 = sumCheck(i, size - 2, data);
-                var dupeChck = dupeCheck(i, size, data);
-                var dsm = (magic0 >> 8) + magic0 & 0xFF;
-                var c1 = (magic1 === magic0);
-                var c2 = (checksum1 === checksum0) && (checksum0 >= dsm);
-                var c3 = (dupeChck === size);
-                checkValue |= (c1 << 0 + b) + (c2 << 1 + b) + (c3 << 2 + b);
-            }
-            return checkValue;
-        }
-        
-        this.init      = init;
-        this.updateHex = updateHex;
-        this.update    = doUpdate;
-        this.check     = check;
+        this.init   = init;
+        this.update = doUpdate;
+        this.check  = check;
     }
-    
+
+    ///////////////////////////////////////////////////////////////////////
+
     function UIHandler()
     {
         var _ref = this, controls = [];
-        
-        function grab(a)
+
+        function init()
         {
-            var select = document.querySelectorAll(a);
-            return (select.length === 1 ? select[0] : select);
+            Eeprom.init();
+
+            _ref.save     = grab("#sv1");
+            _ref.filename = grab("#nam");
+            _ref.save.disabled      = true;
+            _ref.filename.innerText = "Unsaved file";
+
+            var ci = createInterface();
+            grab("#left").appendChild(ci.levelTable);
+            grab("#right").appendChild(ci.miscFlags);
+
+            updateControls();
+
+            grab("#lod").onclick = File.openFile;
+            grab("#sv2").onclick = File.saveAsFile;
+            grab("#sv1").onclick = File.saveFile;
+            grab("select").onchange = changeSlot;
+
+            initDrag();
         }
-        
+
         function updateControls()
         {
             for(var i = 0; i < controls.length; i++)
@@ -131,50 +146,14 @@
                 }
             }
         }
-        
-        function initDrag()
-        {
-            var dragIsFile = false;
-            window.addEventListener("dragenter", function dragenter_Init(evt)
-            {
-                var dT = evt.dataTransfer;
-                for(var i = dT.types.length, files = false; i--;)
-                {
-                    if(dT.types[i] === "Files") {files = true;}
-                }
-                var containsFiles = (files === true),
-                    isOneItem     = (dT.items.length === 1);
-                dragIsFile = (containsFiles && isOneItem) === true ? true : false;
-            });
-            
-            window.addEventListener("dragover", function dragover_Check(evt)
-            {
-                evt.preventDefault();
-                if(dragIsFile === false)
-                {   
-                    evt.dataTransfer.dropEffect = "none"; // prevents drop, shows red X
-                }
-            });
-            
-            window.addEventListener("drop", function drop_Check(evt)
-            {
-                evt.preventDefault();
-                var fl = evt.dataTransfer.files[0];
-                if(dragIsFile === true && (fl.size === 512 || fl.size === 2048) === true)
-                {
-                    File.doLoad(fl, evt.dataTransfer.items[0].webkitGetAsEntry());
-                }
-            });
-        }
-        
+                
         function changeSlot()
         {
             _ref.addr = this.selectedIndex * 112;
-            chrome.storage.local.set({"dataIndex" : _ref.addr});
             updateControls();
         }
-        
-        function init()
+
+        function createInterface()
         {
             var levelNames = {
                 0x08 : "Castle",
@@ -240,6 +219,7 @@
             
             var levelTable       = document.createElement("table");
             levelTable.innerHTML = "<tbody><tr><th>Level</th><th>Level flags</th><th>Coins</th></tr></tbody>";
+
             var i, j, o;
             for(i = 0x08; i <= 0x24; i++)
             {
@@ -280,6 +260,7 @@
             }
             
             var _miscFlags = document.createElement("div");
+            _miscFlags.innerHTML = "<div id=titl>Misc flags</div>";
             for(i = 0x0B; i >= 0x09; i--)
             {
                 for(j = 0; j < 8; j++)
@@ -299,42 +280,54 @@
                     controls.push(o);
                 }
             }
-            
-            Eeprom.init();
-            _ref.save = grab("#sv1");
-            _ref.filename = grab("#nam");
-            _ref.save.disabled = true;
-            _ref.filename.innerText = "Unsaved file";
-            _ref.initDrag(true); 
-            
-            grab("#lod").onclick    = File.openFile;
-            grab("#sv2").onclick    = File.saveAsFile;
-            grab("#sv1").onclick    = File.saveFile;
-            
-            grab("select").onchange = changeSlot;
-            chrome.storage.local.get("dataIndex", function(items)
+            return {
+                levelTable: levelTable,
+                miscFlags: _miscFlags
+            };
+        }
+
+        function initDrag()
+        {
+            var dragIsFile = false;
+            window.addEventListener("dragenter", function(evt)
             {
-                if(items.dataIndex !== undefined)
+                var dT = evt.dataTransfer;
+                for(var i = dT.types.length, files = false; i--;)
                 {
-                    grab("select").selectedIndex = items.dataIndex / 112;
-                    _ref.addr = items.dataIndex;
+                    if(dT.types[i] === "Files") {files = true;}
+                }
+                var containsFiles = (files === true),
+                    isOneItem     = (dT.items.length === 1);
+                dragIsFile = (containsFiles && isOneItem) === true ? true : false;
+            });
+            
+            window.addEventListener("dragover", function(evt)
+            {
+                evt.preventDefault();
+                if(dragIsFile === false)
+                {   
+                    evt.dataTransfer.dropEffect = "none"; // prevents drop, shows red X
                 }
             });
             
-            grab("#left").appendChild(levelTable);
-            grab("#right").innerHTML = "<div id=titl>Misc flags</div>";
-            grab("#right").appendChild(_miscFlags);
-            updateControls();
+            window.addEventListener("drop", function(evt)
+            {
+                evt.preventDefault();
+                var fl = evt.dataTransfer.files[0];
+                if(dragIsFile === true && (fl.size === 512 || fl.size === 2048) === true)
+                {
+                    File.doLoad(fl, evt.dataTransfer.items[0].webkitGetAsEntry());
+                }
+            });
         }
         
-        this.grab = grab;
         this.addr = 0;
         this.updateControls = updateControls;
-        this.changeSlot = changeSlot;
-        this.initDrag = initDrag;
         this.init = init;
     }
     
+    ///////////////////////////////////////////////////////////////////////
+
     function FileHandler()
     {
         var _ref = this;
@@ -362,17 +355,17 @@
             f.entry = Entry;
             f.file  = fl;
             f.readAsArrayBuffer( fl.slice(0, 512) );
-            f.onload = function()
+            f.onload = function(evt)
             {
-                var dat = new Uint8Array(f.result);
+                var dat = new Uint8Array(evt.target.result);
                 if(Eeprom.check(dat) === 0x7FFF)
                 {
-                    _ref.entry = f.entry; // TODO: Should we use event variable or just f?
+                    _ref.entry = evt.target.entry;
                     Eeprom.data = dat;
                     Editor.updateControls();
                     Editor.save.disabled = false;
-                    Editor.filename.innerText = f.file.name;
-                    console.log("File loaded: " + f.file.name);
+                    Editor.filename.innerText = evt.target.file.name;
+                    console.log("File loaded: " + evt.target.file.name);
                 }
             };
         }
@@ -410,7 +403,9 @@
         this.saveFile   = saveFile;
         this.doLoad     = doLoad;
     }
-    
+
+    ///////////////////////////////////////////////////////////////////////
+
     var Eeprom = new EepromHandler(),
         Editor = new UIHandler(),
         File   = new FileHandler();
