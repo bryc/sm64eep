@@ -251,17 +251,22 @@
                     levelTable.childNodes[0].appendChild(row); // Append new <tr> to the <tbody>
                     var currentRow = levelTable.childNodes[0].lastChild; // Get the last added <tr>
                     
-                    for(j = 0; j < 8; j++)
+                    for(j = 0; j < (i<0x24?8:7); j++)
                     {
+                        if(j === 7){ var y = i + 1; } else { y = i }
                         o = document.createElement("input");
                         o.type = "checkbox";
                         o.param = {
                             id: "flag",
                             bit: (1 << j),
-                            address: i
+                            address: y
                         };
                         o.onchange = Eeprom.update;
-                        currentRow.childNodes[1].appendChild(o);
+                        if(j==6){
+                        currentRow.childNodes[2].appendChild(o);
+                        }else {
+                          currentRow.childNodes[1].appendChild(o);  
+                        }
                         controls.push(o);
                     }
                     
@@ -273,6 +278,8 @@
                             id : "num",
                             address : i + 25
                         };
+                        o.size = 2;
+                        o.type = "text";
                         o.value = (i+25).toString(16);
                         currentRow.childNodes[2].appendChild(o);
                         controls.push(o);
@@ -287,7 +294,7 @@
                 for(j = 0; j < 8; j++)
                 {
                     var p = document.createElement("label");
-                    p.innerHTML = miscFlags[i][j];
+                    p.innerHTML = " "+miscFlags[i][j];
                     o = document.createElement("input");
                     o.type = "checkbox";
                     o.param = {
@@ -301,6 +308,21 @@
                     controls.push(o);
                 }
             }
+                    p = document.createElement("div");
+                    p.id = "fuck";
+                    p.innerHTML = "<div id=hh>Lost cap level ID (8, 10 or 36)</div>";
+                    o = document.createElement("input");
+                    o.type = "text";
+                    o.param = {
+                        id : "num",
+                        address : 0
+                    };
+                    o.size = 2;
+                    o.onchange = Eeprom.update;
+                    controls.push(o);
+                    p.appendChild(o);
+                    _miscFlags.appendChild(p);
+
             return {
                 levelTable: levelTable,
                 miscFlags: _miscFlags

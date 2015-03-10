@@ -4,29 +4,45 @@
     <meta charset=utf-8>
     <title>sm64eep</title>
     <style>
-    label{display: block;}
-    label:hover{background:#EEE}
-    div#left{float:left;width:49.9%}
-    div#right{float:right;width:49.9%}
-    td:last-child>input{padding:0;width:35px;font-size:12px;height:10px}
-    td>input[type=checkbox]{margin:0}
-    td{height:14px}
-    body,table {
-        margin-bottom:0;
-        font-size: 12px;
-        border-collapse: collapse;
-    }
-    div#titl,th
+input,select{font:12px Liberation Sans, Arial, sans-serif;}
+body{background:#357;font:12px Liberation Sans, Arial, sans-serif;margin:0;}
+#bar{color:#000;background:#ccdbea;padding:8px 8px 8px 8px;}
+#out{padding:0px 4px 0px 4px;}
+    div#titl,th,#hh
     {
-        padding: 4px; padding-bottom:1px;
+        padding: 4px; padding-bottom:4px; color:#f2f6f9;background:#0c1014;
         font-size: 14px;
         text-align: left;
         font-weight: bold;
-        border-bottom: 1px solid #DDD;
+
     }
-    table{width: 100%;}
-    #snd,#lng{padding:0;width:45px;font-size:12px;height:10px}
-    div#clear{clear:both;visibility:hidden}
+
+    tr:nth-child(odd),label:nth-child(odd){background:#eee;} label:hover{color:#333;background:#ddd;}
+div#left,div#right{margin-top:4px;background:#fff;}
+div#left{float:left;width:50%}
+div#right{float:right;width:49.5%}
+#fuck >input{margin:4px 4px;}
+label{padding:1px 4px 1px 4px;display: block;}
+input,select{vertical-align:middle;margin:0;}
+table{width:100%;border-collapse: collapse;}
+td{padding:1px 4px 2px 4px;}
+input[type=text]{font-size:12px;padding:0;height:10px;}
+
+td > input[type=checkbox]{
+    -webkit-filter: opacity(50%) grayscale(80%) brightness(85%);
+    -webkit-transition: -webkit-filter 200ms, background-size 500ms;
+    outline: none;
+    background: url('star.png') center no-repeat;
+    -webkit-appearance:none;background-size:13px; width:13px;height:13px;
+}td > input[type=checkbox]:nth-child(7){
+    background: url('cannon.png') center no-repeat;
+    background-size:13px;
+    -webkit-filter: opacity(30%) grayscale(80%) brightness(75%);
+}
+td > input[type=checkbox]:hover{cursor:pointer;-webkit-filter: opacity(100%) grayscale(10%) brightness(105%);}
+td > input[type=checkbox]:checked:hover{-webkit-filter: opacity(100%) grayscale(0%) brightness(105%);}
+td > input[type=checkbox]:checked{-webkit-filter:  opacity(100%) grayscale(0%) brightness(92%);}
+
     </style>
     <script src=app.js></script>
 </head>
@@ -44,7 +60,7 @@
         &nbsp;<span id=nam></span>
 
         <div style="float:right">
-            <b>Sound:</b> <input id=snd> <b>Language:</b> <input id=lng>
+            <b>Sound:</b> <input type="text" size=2 id=snd> <b>Language:</b> <input type="text" size=2 id=lng>
         </div>
     </div>
     
