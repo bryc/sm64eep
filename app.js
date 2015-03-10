@@ -413,11 +413,23 @@
     window.SM64App = {
         Editor: Editor,
         Eeprom: Eeprom,
-        File: File
+        File: File,
+        grab: grab
     };
 })();
 
 window.addEventListener("load", function()
 {
     SM64App.Editor.init();
+
+    SM64App.grab("#hlp").addEventListener("click",function(){
+        SM64App.grab(".hlp").style.display = "";
+        SM64App.grab("#teh").className = "blrr";
+    });
+
+    SM64App.grab("#cls").addEventListener("click",function(){
+        SM64App.grab("#teh").className = "";
+        SM64App.grab(".hlp").style.display = "none";
+
+    });
 });

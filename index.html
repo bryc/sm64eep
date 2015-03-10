@@ -25,12 +25,57 @@
         border-bottom: 1px solid #DDD;
     }
     table{width: 100%;}
-    
+    #snd,#lng{padding:0;width:45px;font-size:12px;height:10px}
     div#clear{clear:both;visibility:hidden}
+    .hlp{
+        z-index:1000;
+        position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.2);
+    }
+    .hlp > div > h1 {margin:2px;}
+    .hlp > div{
+        width:75%;
+        margin:auto; margin-top:32px;
+        background:rgba(255,255,255,0.5);
+        border-radius:12px;
+        padding:12px;
+        border:1px solid rgba(0,0,0,0.1);
+    }
+    .blrr{-webkit-filter: blur(6px);}
     </style>
     <script src=app.js></script>
 </head>
 <body>
+    <div style="display:none" class=hlp>
+
+        <div>
+        <h1>sm64eep Help</h1>
+        <p>
+        For testing/debugging purposes, the <b>Sound</b> and <b>Language</b> settings are changed by modifying their raw decimal value. Any number between 0 and 65535 is usable. However many values have undefined and unpredictable results.
+        <table style="width:100%">
+            <tr><td>Known values for <b>Sound setting</b>: </td><td>Known values for <b>Language setting</b>: </td></tr>
+            <tr><td>
+                <code><b>0</b></code>: Stereo<br>
+                <code><b>1</b></code>: Mono<br>
+                <code><b>2</b></code>: Headset<br>
+            </td><td>
+                <code><b>0</b></code>: English<br>
+                <code><b>1</b></code>: French<br>
+                <code><b>2</b></code>: German<br>
+        </td></tr>
+        </table><br>
+        Also, a quick note on the level flags:
+        <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><br>
+        <br>
+        The first 7 flags represent the stars obtained in <i>that</i> level. The 8th and final flag actually controls to the <b>previous</b> level's cannon state (activated or not). <br><br>
+
+        This accurately reflects the internal data. Blame Nintendo. This will be changeded in a UI update that will make it much more userfriendly. 
+
+        </p>
+
+        <input id=cls value="Close" type=button>
+        </div>
+    </div>
+<div id="teh">
     <div id=bar>
         <input id=sv1 value=Save type=button>
         <input id=sv2 value="Save As" type=button>
@@ -42,10 +87,16 @@
             <option>Game D</option>
         </select>
         &nbsp;<span id=nam></span>
+
+        <div style="float:right">
+            <b>Sound:</b> <input id=snd> <b>Language:</b> <input id=lng>
+            <input id=hlp value="?" type=button>
+        </div>
     </div>
     
     <div id=out class=box>
         <div id=left></div><div id=right></div><div id=clear></div>
     </div>
+</div>
     </body>
 </html>
