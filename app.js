@@ -56,7 +56,7 @@
         {
             var md = this.param;
             var size = (md.glob === true) ? 32 : 56;
-            var baseAddress = Editor.baseAddress;
+            var baseAddress = (md.glob === true) ? 0x01C0: Editor.baseAddress;
             
             if(md.id === "num")
             {
@@ -118,9 +118,29 @@
             _ref.saveButton.disabled = true;
             _ref.nameDisplay.innerText = "Unsaved file";
 
+
+
             var ci = createInterface();
             grab("#left").appendChild(ci.levelTable);
             grab("#right").appendChild(ci.miscFlags);
+
+            _ref._sound = grab("#snd");
+            _ref._lang  = grab("#lng");
+
+            _ref._sound.param = {
+                glob : true,
+                id : "num",
+                address : 0x0011
+            };
+            _ref._lang.param = {
+                glob : true,
+                id : "num",
+                address : 0x0013
+            };
+            controls.push(_ref._sound);
+            controls.push(_ref._lang);
+            _ref._sound.oninput = Eeprom.update;
+            _ref._lang.oninput = Eeprom.update;
 
             updateControls();
 
@@ -136,13 +156,14 @@
         {
             for(var i = 0; i < controls.length; i++)
             {
+                var baseAddress = (controls[i].param.glob === true) ? 0x01C0: Editor.baseAddress;
                 if(controls[i].param.id === "num")
                 {
-                    controls[i].value = parseInt(Eeprom.data[_ref.baseAddress + controls[i].param.address], 10);
+                    controls[i].value = parseInt(Eeprom.data[baseAddress + controls[i].param.address], 10);
                 }
                 else if(controls[i].param.id === "flag")
                 {
-                    controls[i].checked = Eeprom.data[_ref.baseAddress + controls[i].param.address] & controls[i].param.bit;
+                    controls[i].checked = Eeprom.data[baseAddress + controls[i].param.address] & controls[i].param.bit;
                 }
             }
         }
@@ -413,23 +434,11 @@
     window.SM64App = {
         Editor: Editor,
         Eeprom: Eeprom,
-        File: File,
-        grab: grab
+        File: File
     };
 })();
 
 window.addEventListener("load", function()
 {
     SM64App.Editor.init();
-
-    SM64App.grab("#hlp").addEventListener("click",function(){
-        SM64App.grab(".hlp").style.display = "";
-        SM64App.grab("#teh").className = "blrr";
-    });
-
-    SM64App.grab("#cls").addEventListener("click",function(){
-        SM64App.grab("#teh").className = "";
-        SM64App.grab(".hlp").style.display = "none";
-
-    });
 });
