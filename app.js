@@ -54,28 +54,28 @@
 
         function doUpdate()
         {
-            var md = this.metadata;
+            var md = this.param;
             var size = (md.glob === true) ? 32 : 56;
-            var addr = Editor.addr;
+            var baseAddress = Editor.baseAddress;
             
-            if(md.type === "num")
+            if(md.id === "num")
             {
-                _ref.data[       addr + md.offset] = parseInt(this.value & 0xFF, 10);
-                _ref.data[size + addr + md.offset] = parseInt(this.value & 0xFF, 10);
+                _ref.data[       baseAddress + md.address] = parseInt(this.value & 0xFF, 10);
+                _ref.data[size + baseAddress + md.address] = parseInt(this.value & 0xFF, 10);
             }
-            else if(md.type === "flag")
+            else if(md.id === "flag")
             {
-                _ref.data[       addr + md.offset] ^= md.bit;
-                _ref.data[size + addr + md.offset] ^= md.bit;
+                _ref.data[       baseAddress + md.address] ^= md.bit;
+                _ref.data[size + baseAddress + md.address] ^= md.bit;
             }
             
-            var sum = sumCheck(addr, size-2, _ref.data);
+            var sum = sumCheck(baseAddress, size-2, _ref.data);
             var sum2 = [sum >> 8, sum & 0xFF];
             
-            _ref.data[addr + size   - 2] = sum2[0];
-            _ref.data[addr + size   - 1] = sum2[1];
-            _ref.data[addr + size*2 - 2] = sum2[0];
-            _ref.data[addr + size*2 - 1] = sum2[1];
+            _ref.data[baseAddress + size   - 2] = sum2[0];
+            _ref.data[baseAddress + size   - 1] = sum2[1];
+            _ref.data[baseAddress + size*2 - 2] = sum2[0];
+            _ref.data[baseAddress + size*2 - 1] = sum2[1];
         }
         
         function dupeCheck(offset, size, data)
@@ -113,10 +113,10 @@
         {
             Eeprom.init();
 
-            _ref.save     = grab("#sv1");
-            _ref.filename = grab("#nam");
-            _ref.save.disabled      = true;
-            _ref.filename.innerText = "Unsaved file";
+            _ref.saveButton  = grab("#sv1");
+            _ref.nameDisplay = grab("#nam");
+            _ref.saveButton.disabled = true;
+            _ref.nameDisplay.innerText = "Unsaved file";
 
             var ci = createInterface();
             grab("#left").appendChild(ci.levelTable);
@@ -136,20 +136,20 @@
         {
             for(var i = 0; i < controls.length; i++)
             {
-                if(controls[i].metadata.type === "num")
+                if(controls[i].param.id === "num")
                 {
-                    controls[i].value = parseInt(Eeprom.data[_ref.addr + controls[i].metadata.offset], 10);
+                    controls[i].value = parseInt(Eeprom.data[_ref.baseAddress + controls[i].param.address], 10);
                 }
-                else if(controls[i].metadata.type === "flag")
+                else if(controls[i].param.id === "flag")
                 {
-                    controls[i].checked = Eeprom.data[_ref.addr + controls[i].metadata.offset] & controls[i].metadata.bit;
+                    controls[i].checked = Eeprom.data[_ref.baseAddress + controls[i].param.address] & controls[i].param.bit;
                 }
             }
         }
                 
         function changeSlot()
         {
-            _ref.addr = this.selectedIndex * 112;
+            _ref.baseAddress = this.selectedIndex * 112;
             updateControls();
         }
 
@@ -234,10 +234,10 @@
                     {
                         o = document.createElement("input");
                         o.type = "checkbox";
-                        o.metadata = {
-                            type : "flag",
-                            bit : (1 << j),
-                            offset : i
+                        o.param = {
+                            id: "flag",
+                            bit: (1 << j),
+                            address: i
                         };
                         o.onchange = Eeprom.update;
                         currentRow.childNodes[1].appendChild(o);
@@ -248,9 +248,9 @@
                     {
                         o = document.createElement("input");
                         o.oninput = Eeprom.update;
-                        o.metadata = {
-                            type : "num",
-                            offset : i + 25
+                        o.param = {
+                            id : "num",
+                            address : i + 25
                         };
                         o.value = (i+25).toString(16);
                         currentRow.childNodes[2].appendChild(o);
@@ -269,10 +269,10 @@
                     p.innerHTML = miscFlags[i][j];
                     o = document.createElement("input");
                     o.type = "checkbox";
-                    o.metadata = {
-                        type : "flag",
+                    o.param = {
+                        id : "flag",
                         bit : (1 << j),
-                        offset : i
+                        address : i
                     };
                     o.onchange = Eeprom.update;
                     p.insertBefore(o, p.firstChild);
@@ -321,7 +321,7 @@
             });
         }
         
-        this.addr = 0;
+        this.baseAddress = 0;
         this.updateControls = updateControls;
         this.init = init;
     }
@@ -343,8 +343,8 @@
                     writer.truncate(512);
                     console.log("File saved:  " + fl.name);
                     _ref.entry = Entry;
-                    Editor.filename.innerText = fl.name;
-                    Editor.save.disabled = false;
+                    Editor.nameDisplay.innerText = fl.name;
+                    Editor.saveButton.disabled = false;
                 };
             });});
         }
@@ -363,8 +363,8 @@
                     _ref.entry = evt.target.entry;
                     Eeprom.data = dat;
                     Editor.updateControls();
-                    Editor.save.disabled = false;
-                    Editor.filename.innerText = evt.target.file.name;
+                    Editor.saveButton.disabled = false;
+                    Editor.nameDisplay.innerText = evt.target.file.name;
                     console.log("File loaded: " + evt.target.file.name);
                 }
             };
@@ -388,7 +388,7 @@
         {
             chrome.fileSystem.chooseEntry({
             type:"saveFile",
-            suggestedName: Editor.save.disabled ? "SUPER MARIO 64.eep" : Editor.filename.innerText,
+            suggestedName: Editor.saveButton.disabled ? "SUPER MARIO 64.eep" : Editor.nameDisplay.innerText,
             accepts: [ {extensions : ["eep"]} ]
             }, doSave);
         }
