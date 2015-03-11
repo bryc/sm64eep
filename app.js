@@ -332,6 +332,7 @@
         function initDrag()
         {
             var dragIsFile = false;
+            var lastTarget = null;
             window.addEventListener("dragenter", function(evt)
             {
                 var dT = evt.dataTransfer;
@@ -342,6 +343,23 @@
                 var containsFiles = (files === true),
                     isOneItem     = (dT.items.length === 1);
                 dragIsFile = (containsFiles && isOneItem) === true ? true : false;
+                if(dragIsFile) {
+                    lastTarget = evt.target;
+                    grab("#dropzone").style.visibility = "";
+                    grab("#dropzone").style.opacity = 1;
+                    grab("#textnode").style.fontSize = "48px";
+                    grab("#tw").className = "blr";
+                }
+            });
+           window.addEventListener("dragleave", function(evt)
+            {
+                if(evt.target === lastTarget) {
+                    lastTarget = evt.target;
+                    grab("#dropzone").style.visibility = "hidden";
+                    grab("#dropzone").style.opacity = 0;
+                    grab("#textnode").style.fontSize = "42px";
+                    grab("#tw").className = "";
+                }
             });
             
             window.addEventListener("dragover", function(evt)
@@ -356,6 +374,9 @@
             window.addEventListener("drop", function(evt)
             {
                 evt.preventDefault();
+                grab("#dropzone").style.visibility = "hidden";
+                grab("#dropzone").style.opacity = 0;
+                grab("#textnode").style.fontSize = "42px";grab("#tw").className = "";
                 var fl = evt.dataTransfer.files[0];
                 if(dragIsFile === true && (fl.size === 512 || fl.size === 2048) === true)
                 {

@@ -4,6 +4,31 @@
     <meta charset=utf-8>
     <title>sm64eep</title>
     <style>
+
+
+div#dropzone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999999999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: visibility 175ms, opacity 175ms;
+    display: table;
+    text-shadow: 1px 1px 2px #000;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.45);
+    font: bold 42px Oswald, DejaVu Sans, Tahoma, sans-serif;
+}
+div#textnode {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    transition: font-size 175ms;
+}
+
+
 input,select{font:12px Liberation Sans, Arial, sans-serif;}
 body{background:#357;font:12px Liberation Sans, Arial, sans-serif;margin:0;}
 #bar{color:#000;background:#ccdbea;padding:8px 8px 8px 8px;}
@@ -42,11 +67,15 @@ td > input[type=checkbox]{
 td > input[type=checkbox]:hover{cursor:pointer;-webkit-filter: opacity(100%) grayscale(10%) brightness(105%);}
 td > input[type=checkbox]:checked:hover{-webkit-filter: opacity(100%) grayscale(0%) brightness(105%);}
 td > input[type=checkbox]:checked{-webkit-filter:  opacity(100%) grayscale(0%) brightness(92%);}
-
+ .blr{-webkit-filter: blur(2px);}
     </style>
     <script src=app.js></script>
 </head>
 <body>
+<div style="visibility:hidden; opacity:0" id="dropzone">
+    <div id="textnode">Drop</div>
+</div>
+<div id=tw>
     <div id=bar>
         <input id=sv1 value=Save type=button>
         <input id=sv2 value="Save As" type=button>
@@ -67,5 +96,6 @@ td > input[type=checkbox]:checked{-webkit-filter:  opacity(100%) grayscale(0%) b
     <div id=out class=box>
         <div id=left></div><div id=right></div><div id=clear></div>
     </div>
+</div>
     </body>
 </html>
