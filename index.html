@@ -249,6 +249,11 @@ Each section contains a duplicate backup copy in case of data corruption.
         <tr><div id=coord></div>
             <th colspan=4>Coordinates of Mario's lost cap</th>
         </tr>
+        <tr><td colspan=3>
+          <p><b>Note:</b> This coordinate system seems to be a removed feature, besides the Level ID being used in the misc flags.
+              When Mario is blown away in Snowman's Land, the coordinates of his hat is saved here, but are never used. Mario's cap is always with
+            the snowman in that level.</p>
+          </tr>
         <tr id=col>
             <th class=small>Offset</th>
             <th class=small>Size</th>
@@ -262,7 +267,7 @@ Each section contains a duplicate backup copy in case of data corruption.
             <td>1</td>
             <td>8-bit int</td>
             <td>
-              <b>Level map ID specifier</b><br>
+                <b>Level map ID specifier (Only these values work with <code>0x09:0</code>)</b><br>
               <code>
                 0x08: Shifting Sand Land<br>
                 0x0C: Snowman's Land<br>
@@ -448,11 +453,13 @@ Each section contains a duplicate backup copy in case of data corruption.
 <tr>
         <td colspan=4>
           <p><b>Note:</b><br>
-          
-            For saving stars and cannons in levels ("Level flags"), there are 26 bytes that follow the same format. Rather than list out the names of each star here, I will describe the general format, and provide a list of each level and its offset.</p>
-          <p>There are only 120 stars in the game, but the data format allows for up to 182 stars (7*26). This is made possible because each level is assigned a byte that can store up to 7 individual stars, but not all levels use them all.  
+            For saving stars and cannons in levels ("Level flags"), there are 26 bytes that follow the same format.
+              Rather than list out the names of each star here, I will describe the general format, and provide a list of each level and its offset.
+            </p>
+          <p>There are only 120 stars in the game, but the data format allows for up to 182 stars (7*26).
+              This is made possible because each level is assigned a byte that can store up to 7 individual stars, but not all levels use them all.
+              The last byte does not store any stars normally, however some ROM hacks like Star Road can use it.
           </p>
-          
           <p>
             <code style='padding-left:16px;display:inline-block'>
               Bit 0: Star 1<br>
@@ -464,8 +471,6 @@ Each section contains a duplicate backup copy in case of data corruption.
               Bit 6: Star 7<br>
               Bit 7: Cannon unlocked for <i>previous</i> level
             </code>
-            
-            
           </p>
           </td>
         </tr>
@@ -645,7 +650,7 @@ Each section contains a duplicate backup copy in case of data corruption.
             <td class="m">0x0000</td>
             <td class="m">0x000F</td>
             <td>16</td>
-            <td>Unknown XOR bit data</td>
+            <td>Unknown XOR bit data (research must be done)</td>
         </tr>
         <tr>
             <td>0x0010</td>
@@ -665,7 +670,7 @@ Each section contains a duplicate backup copy in case of data corruption.
             <td class="m">0x0013</td>
             <td>2</td>
             <td>
-              <b>Language setting (EU version only)</b><br>
+              <b>Language setting (PAL version only)</b><br>
               <code>
               0x00: English<br>
               0x01: French<br>
@@ -677,7 +682,7 @@ Each section contains a duplicate backup copy in case of data corruption.
             <td class="m">0x0014</td>
             <td class="m">0x001B</td>
             <td>8</td>
-            <td>Reserved or unused</td>
+            <td>unknown or unused</td>
         </tr>
         <tr>
             <td class="m">0x001C</td>
