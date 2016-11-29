@@ -219,7 +219,7 @@ Each section contains a duplicate backup copy in case of data corruption.
             <td class="m">0x0008</td>
             <td class="m">0x0024</td>
             <td>29</td>
-            <td>Boolean flags (Stars, cannons and others)</td>
+            <td>Boolean flags (Level flags and misc flags - stars, cannons and others)</td>
         </tr>
         <tr>
             <td class="m">0x0025</td>
@@ -307,7 +307,7 @@ Each section contains a duplicate backup copy in case of data corruption.
           </tr>
         <tr id=col>
             <th style="width:40px" class=small>Offset</th>
-            <th style="width:50px"  class=small>Bit pos</th>
+            <th style="width:50px" class=small>Bit pos</th>
             <th>Short description</th>
         </tr>
     </thead>
@@ -315,110 +315,112 @@ Each section contains a duplicate backup copy in case of data corruption.
         <tr>
             <td class="m">0x0B</td>
             <td>0</td>
-            <td>File icon activated on main menu, showing star amount</td>
+            <td>File is occupied on main menu, showing star amount</td>
         </tr>
         <tr>
             <td></td>
             <td>1</td>
-            <td>Wing cap activated</td>
+            <td>Wing Cap is activated</td>
         </tr>
         <tr>
             <td></td>
             <td>2</td>
-            <td>Metal cap activated</td>
+            <td>Metal Cap is activated</td>
         </tr>
         <tr>
             <td></td>
             <td>3</td>
-            <td>Vanish cap activated</td>
+            <td>Vanish Cap is activated</td>
         </tr>
         <tr>
             <td></td>
             <td>4</td>
-            <td>Have key (basement)</td>
+            <td>Have key - Basement</td>
         </tr>
         <tr>
             <td></td>
             <td>5</td>
-            <td>Have key (2nd floor)</td>
+            <td>Have key - 2nd Floor</td>
         </tr>
         <tr>
             <td></td>
             <td>6</td>
-            <td>Key door unlocked (basement)</td>
+            <td>Key door is unlocked - Basement</td>
         </tr>
         <tr>
             <td></td>
             <td>7</td>
-            <td>Key door unlocked (2nd floor)</td>
+            <td>Key door is unlocked - 2nd Floor</td>
         </tr>
         <tr>
             <td class="m">0x0A</td>
 
             <td>0</td>
-            <td>Portal moved back (Dire Dire Docks)</td>
+            <td>Portal is moved back (Dire Dire Docks entrance)</td>
         </tr>
         <tr>
             <td></td>
             <td>1</td>
-            <td>Castle moat drained</td>
+            <td>Castle moat is drained</td>
         </tr>
         <tr>
             <td></td>
             <td>2</td>
-            <td>Star door animation seen (Secret Slide)</td>
+            <td>Star door animation seen (1 star, Princess's Secret Slide)</td>
         </tr>
         <tr>
             <td></td>
             <td>3</td>
-            <td>Star door animation seen (Whomp)</td>
+            <td>Star door animation seen (1 star, Whomp's Fortress)</td>
         </tr>
         <tr>
             <td></td>
             <td>4</td>
-            <td>Star door animation seen (Cool)</td>
+            <td>Star door animation seen (3 stars, Cool, Cool Mountain)</td>
         </tr>
         <tr>
             <td></td>
             <td>5</td>
-            <td>Star door animation seen (Jolly)</td>
+            <td>Star door animation seen (3 stars, Jolly Roger Bay)</td>
         </tr>
         <tr>
             <td></td>
             <td>6</td>
-            <td>Star door animation seen (Bowser)</td>
+            <td>Star door animation seen (8 stars, Bowser in the Dark World)</td>
         </tr>
         <tr>
             <td></td>
             <td>7</td>
-            <td>Door unlock animation seen - 30 star, Bowser in the Fire Sea (Boss)</td>
+            <td>Star door animation seen (30 stars, Bowser in the Fire Sea)</td>
         </tr>
         <tr>
             <td class="m">0x09</td>
 
             <td>0</td>
-            <td>Lost cap - Level ID (Depends on coordinate level ID)</td>
+            <td>Lost cap - Mario's cap is lost in: Level ID (Depends on coordinate level ID)</td>
         </tr>
         <tr>
             <td></td>
             <td>1</td>
-            <td>Lost cap - Shifting Sand Land</td>
+            <td>Lost cap - Mario's cap is lost in: Shifting Sand Land</td>
         </tr>
         <tr>
             <td></td>
             <td>2</td>
-            <td>Lost cap - Tall, Tall Mountain</td>
+            <td>Lost cap - Mario's cap is lost in: Tall, Tall Mountain</td>
         </tr>
         <tr>
             <td></td>
             <td>3</td>
-            <td>Lost cap - Snowman's Land</td>
+            <td>Lost cap - Mario's cap is lost in: Snowman's Land</td>
         </tr>
         <tr>
             <td></td>
             <td>4</td>
-            <td>Star door animation seen (Third floor/Clock)</td>
+            <td>Star door animation seen (50 stars, 3rd Floor/Tick Tock Clock)</td>
         </tr>
+        <!-- Note: The term 'reserved' is not used here (5,6,7) because reserved refers to potential upgradability.
+             SM64 is over a decade old, and there will be no future updates here. It is either unknown or unused. -->
         <tr>
             <td></td>
             <td>5</td>
