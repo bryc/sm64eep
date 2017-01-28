@@ -241,7 +241,10 @@ Each section contains a duplicate backup copy in case of data corruption.
             <td class="m">0x0036</td>
             <td class="m">0x0037</td>
             <td>2</td>
-            <td>16-bit checksum</td>
+            <td>
+                16-bit checksum<br>
+                <em>This is simply the sum of all previous bytes in the section, stored as a 16-bit int (big endian)</em>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -718,7 +721,9 @@ Each section contains a duplicate backup copy in case of data corruption.
             <td class="m">0x001E</td>
             <td class="m">0x001F</td>
             <td>2</td>
-            <td>16-bit checksum</td>
+            <td>
+                16-bit checksum<br>
+                <em>This is simply the sum of all previous bytes in the section, stored as a 16-bit int (big endian)</em></td>
         </tr>
     </tbody>
 </table>
