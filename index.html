@@ -104,18 +104,27 @@ div#fk
 <div pn="Overview" style="display:none" class=pg>
 
 <div id=p>
-
 <p>
-<b>Super Mario 64</b> uses a 512-byte EEPROM chip in the cartridge.
-The EEPROM is divided into four sections for game save data, with an additional section for global data.
-Each section contains a duplicate backup copy in case of data corruption. 
+    <b>Super Mario 64</b> uses a 512-byte (4 Kibibit) EEPROM chip in the cartridge for storing saved game data.
+    The EEPROM is divided into four save file sections, with an additional section for global data.
+    Each section contains two identical copies of the data: a duplicate backup copy is kept in case of data corruption.
 </p>
 
 <p>
-    All versions of Super Mario 64 follow this memory layout, with PAL having an additional field in global data for the selected language.
+    <center><img src=pcb.jpg></center>
 </p>
 
+<p>
+    All regional versions of Super Mario 64 follow the memory structure described in this document.
+    However, the European version has an additional field in global data for saving the selected language.
+</p>
 
+<p>
+    <center>
+        <img src=fsel.png><br>
+        The four sections in EEPROM memory correspond to the four available slots in the "File Select" screen. 
+    </center>
+</p>
 </div>
 
 <table id="byc-table">
