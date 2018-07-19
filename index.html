@@ -109,8 +109,13 @@ div#fk
 </p>
 
 <p>
-    <b>Super Mario 64</b> uses a 512-byte EEPROM chip in the cartridge for storing saved game data.
-    The EEPROM is divided into four sections for save files, with an additional section for global data.
+    <b>Super Mario 64</b> saves game progress internally in the cartridge itself, at a time when most games used memory cards.
+    There were four common save types: EEPROM 4K, EEPROM 16K (DK64), SRAM (Ocarina of Time) and FlashRAM (Pokemon Snap).
+    Super Mario 64 uses the EEPROM 4K save type which only stores 512 bytes of data.
+</p>
+
+<p>
+    The 512-byte EEPROM is divided into four sections for save files, with an additional section for global data (4*112 + 64).
     Each section contains two identical copies of the save data: the second is a duplicate backup copy, kept in case of data corruption.
 </p>
 
