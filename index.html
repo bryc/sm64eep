@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <style>
     body {
         background:#bba;
@@ -95,7 +96,7 @@ div#fk
 }
 </style>
 <div id=fk>
-<b>sm64eep_doc</b> v01 - 2015 bryc
+<b>sm64eep_doc</b> v02 - 2015-2019 bryc
 </div>
 
 
@@ -745,26 +746,37 @@ div#fk
 </div>
 
 <script>
-window.onload = function()
-{
-    var t = document.querySelectorAll("div.pg");
-    
-    for(var i = 0; i < t.length; i++)
-    {
-        var L = document.querySelector("div.menu");
-        L.innerHTML += "<a href='?pg="+i+"'>"+ t[i].getAttribute('pn')+"</a>";
-        if(i < t.length-1){L.innerHTML += " | "}
+window.onload = function() {
+    let pgs = document.querySelectorAll("div.pg"), // Static list of pages
+        menu = document.querySelector("div.menu"), // Navigation
+        prevPage = undefined;
+
+    // Build navigation menu from page list
+    for(let i = 0; i < pgs.length; i++) {
+        menu.innerHTML += `<a href="#pg=${i}">${pgs[i].getAttribute("pn")}</a>${i < pgs.length-1?" | ":""}`;
     }
     
-    var nav = window.location.search.substr(1);
-    var nv2 = nav.split("=");
-    if(nv2[0]=="pg")
-    {
-        document.querySelectorAll('div.pg')[nv2[1]].style.cssText="";
+    // Function which swaps hidden page contents based on hash.
+    function pageChange() {
+        // Get hashnav string
+        let nav = window.location.hash.substr(1).split("=");
+
+        // If valid, load from hashnav, otherwise default to index
+        if(nav[0] === "pg" && pgs[nav[1]] !== undefined) {
+            document.title = pgs[nav[1]].getAttribute("pn");
+            if(prevPage !== undefined) pgs[prevPage].style.display = "none";
+            pgs[nav[1]].style.cssText = "", prevPage = nav[1];
+        }
+        else {
+            document.title = pgs[0].getAttribute("pn");
+            pgs[0].style.cssText = "", prevPage = 0;
+        }
     }
-    else
-    {
-        document.querySelectorAll('div.pg')[0].style.cssText="";
-    }
+
+    // Update page state on load
+    pageChange();
+
+    // Update page state when changing hash
+    window.onhashchange = pageChange;
 }
 </script>
