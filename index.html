@@ -271,9 +271,8 @@ div#fk
             <th colspan=4>Coordinates of Mario's lost cap</th>
         </tr>
         <tr><td colspan=4>
-          <p><b>Note:</b> This coordinate system seems to be a removed feature, besides the Level ID being used in the misc flags.
-              When Mario is blown away in Snowman's Land, the coordinates of his hat is saved here, but are never used. Mario's cap is always with
-              the snowman in that level.</p>
+          <p><b>Note:</b> This coordinate system seems to be a remnant of a removed feature for Mario's cap location. The Course ID specified is used for misc flag <code>0x09:0</code>.
+              When Mario is blown away in Snowman's Land, the coordinates of his hat is saved here, but are never used. Mario's cap is always with the snowman in that level.</p>
             </td>
           </tr>
         <tr id=col>
@@ -289,7 +288,7 @@ div#fk
             <td>1</td>
             <td>8-bit int</td>
             <td>
-                <b>Level map ID specifier (Only these values work with flag <code>0x09:0</code> below)</b><br>
+                <b>Course ID specifier (Only the values below are valid for flag <code>0x09:0</code>):</b><br>
               <code>
                 0x08: Shifting Sand Land<br>
                 0x0A: Snowman's Land<br>
@@ -301,7 +300,7 @@ div#fk
             <td class="m">0x01</td>
             <td>1</td>
             <td>8-bit int</td>
-          <td>Unknown (always <code>0x01</code>)</td>
+          <td>Area ID specifier (always set to <code>0x01</code>)</td>
         </tr>
         <tr>
             <td class="m">0x02</td>
@@ -692,7 +691,8 @@ div#fk
             <td class="m">0x0000</td>
             <td class="m">0x000F</td>
             <td>16</td>
-            <td>Unknown XOR data (unused, somehow related to level highscores)</td>
+            <td>Coin highscore tiebreaker (When two files have the same score for a course, the most recently saved score wins)<br>
+            3: Newest ... 2 ... 1 ... 0: Oldest</td>
         </tr>
         <tr>
             <td>0x0010</td>
