@@ -145,7 +145,6 @@
             updateControls();
 
             grab("#lod").onclick = File.openFile;
-            grab("#sv2").onclick = File.saveAsFile;
             grab("#sv1").onclick = File.saveFile;
             grab("select").onchange = changeSlot;
 
@@ -333,6 +332,21 @@
         {
             var dragIsFile = false;
             var lastTarget = null;
+            
+            function handleLoad(evt)
+            {
+                var fl = evt.target.files || evt.dataTransfer.files;
+                if(dragIsFile === true || fl !== undefined)
+                {
+                    evt.preventDefault();
+                    grab("#dropzone").style.visibility = "hidden";
+                    grab("#dropzone").style.opacity = 0;
+                    grab("#textnode").style.fontSize = "42px";
+                    grab("#tw").className = "";
+                    if(fl[0].size == 512 || fl[0].size == 2048 || fl[0].size == 296960) File.doLoad(fl[0]);
+                }
+            };
+            
             window.addEventListener("dragenter", function(evt)
             {
                 var dT = evt.dataTransfer;
@@ -371,18 +385,8 @@
                 }
             });
             
-            window.addEventListener("drop", function(evt)
-            {
-                evt.preventDefault();
-                grab("#dropzone").style.visibility = "hidden";
-                grab("#dropzone").style.opacity = 0;
-                grab("#textnode").style.fontSize = "42px";grab("#tw").className = "";
-                var fl = evt.dataTransfer.files[0];
-                if(dragIsFile === true && (fl.size === 512 || fl.size === 2048) === true)
-                {
-                    File.doLoad(fl, evt.dataTransfer.items[0].webkitGetAsEntry());
-                }
-            });
+            document.getElementById("fileOpen").onchange = handleLoad;
+            window.addEventListener("drop", handleLoad);
         }
         
         this.baseAddress = 0;
@@ -396,27 +400,16 @@
     {
         var _ref = this;
         
-        function doSave(Entry)
+        function doSave(data, fname)
         {
-            Entry.createWriter(function(writer){Entry.file(function(fl)
-            {
-                writer.write( new Blob([ new Uint8Array(Eeprom.data) ]) );
-                writer.onwriteend = function()
-                {
-                    writer.onwriteend = null;
-                    writer.truncate(512);
-                    console.log("File saved:  " + fl.name);
-                    _ref.entry = Entry;
-                    Editor.nameDisplay.innerText = fl.name;
-                    Editor.saveButton.disabled = false;
-                };
-            });});
+            let a = document.createElement("a"), b = URL.createObjectURL(data);
+            a.download = fname, a.href = b, a.dispatchEvent(new MouseEvent("click"));
+            setTimeout(() => URL.revokeObjectURL(b), 3e3);
         }
         
-        function doLoad(fl, Entry)
+        function doLoad(fl)
         {
             var f   = new FileReader();
-            f.entry = Entry;
             f.file  = fl;
             f.readAsArrayBuffer( fl.slice(0, 512) );
             f.onload = function(evt)
@@ -424,7 +417,6 @@
                 var dat = new Uint8Array(evt.target.result);
                 if(Eeprom.check(dat) === 0x7FFF)
                 {
-                    _ref.entry = evt.target.entry;
                     Eeprom.data = dat;
                     Editor.updateControls();
                     Editor.saveButton.disabled = false;
@@ -436,34 +428,15 @@
         
         function openFile()
         {
-            chrome.fileSystem.chooseEntry({type:"openFile"}, function(Entry)
-            {
-                Entry.file(function(fl)
-                {
-                    if(fl.size === 512 || fl.size === 2048)
-                    {
-                        _ref.doLoad(fl, Entry);
-                    }
-                });
-            });
-        }
-        
-        function saveAsFile()
-        {
-            chrome.fileSystem.chooseEntry({
-            type:"saveFile",
-            suggestedName: Editor.saveButton.disabled ? "SUPER MARIO 64.eep" : Editor.nameDisplay.innerText,
-            accepts: [ {extensions : ["eep"]} ]
-            }, doSave);
+            document.getElementById("fileOpen").click();
         }
         
         function saveFile()
         {
-            chrome.fileSystem.getWritableEntry(_ref.entry, doSave);
+            doSave(new Blob([Eeprom.data]), Editor.nameDisplay.innerText);
         }
         
         this.openFile   = openFile;
-        this.saveAsFile = saveAsFile;
         this.saveFile   = saveFile;
         this.doLoad     = doLoad;
     }

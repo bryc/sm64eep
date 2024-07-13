@@ -68,6 +68,8 @@ td > input[type=checkbox]:hover{cursor:pointer;-webkit-filter: opacity(100%) gra
 td > input[type=checkbox]:checked:hover{-webkit-filter: opacity(100%) grayscale(0%) brightness(105%);}
 td > input[type=checkbox]:checked{-webkit-filter:  opacity(100%) grayscale(0%) brightness(92%);}
  .blr{-webkit-filter: blur(2px);}
+ 
+ #fileOpen{display:none}
     </style>
     <script src=app.js></script>
 </head>
@@ -78,7 +80,6 @@ td > input[type=checkbox]:checked{-webkit-filter:  opacity(100%) grayscale(0%) b
 <div id=tw>
     <div id=bar>
         <input id=sv1 value=Save type=button>
-        <input id=sv2 value="Save As" type=button>
         <input id=lod value=Load type=button>
         <select>
             <option>Game A</option>
@@ -87,6 +88,8 @@ td > input[type=checkbox]:checked{-webkit-filter:  opacity(100%) grayscale(0%) b
             <option>Game D</option>
         </select>
         &nbsp;<span id=nam></span>
+        
+        <input type="file" id="fileOpen">
 
         <div style="float:right">
             <b>Sound:</b> <input type="text" size=2 id=snd> <b>Language:</b> <input type="text" size=2 id=lng>
